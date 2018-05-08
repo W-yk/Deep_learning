@@ -1,10 +1,11 @@
-#First try
+#This is a simple three-layer implementation using keras
 
 
 import keras
 from keras import backend as K
 from keras.layers import Input,Dense,Flatten
 from keras.models import Model
+
 #import visualization tools
 import pydot
 from IPython.display import SVG
@@ -14,8 +15,12 @@ from keras.utils import plot_model
 #import the MNIST dataset
 from keras.datasets import mnist
 (X_train, Y_train), (X_test, Y_test) = mnist.load_data()
+
+#transfer labels into one hot matrix
 Y_train = keras.utils.np_utils.to_categorical(Y_train, 10)
 Y_test = keras.utils.np_utils.to_categorical(Y_test, 10)
+
+
 def Three_layer_model(input_shape):
 
     X_input=Input(input_shape)
@@ -39,5 +44,6 @@ print ("Test Accuracy = " + str(preds[1]))
 TL_model.summary()
 plot_model(TL_model, to_file='TL_model.png')
 SVG(model_to_dot(TL_model).create(prog='dot', format='svg'))
+
 
 
