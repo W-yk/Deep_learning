@@ -1,51 +1,17 @@
+'''
+cats and dogs recognition with transfer learning
+using ResNet50
+'''
+
+
 import os
-from scipy import misc
-import numpy as np
-import matplotlib.pyplot as plt
-
-def load_data(path):
-    """
-    load the dataset
-    args:
-        path: the path to the pictures
-    return:
-        X_train,Y_train
-    """
-
-    data=np.empty((2000,224,224,3),dtype="float32")
-    label=np.empty((2000,))
-    imgs=os.listdir(path)
-    num=len(imgs)
-    times=0
-    time=0
-    for i in range(num):
-
-        if imgs[i].split('.')[0] == 'cat':
-            if times ==1000:
-                continue
-            img = np.array(plt.imread(path + imgs[i]))
-            img_rs=misc.imresize(img,(224,224,3))
-            data[i, :, :, :] = img_rs
-            label[i] = 0
-            times +=1
-
-
-        else:
-
-            img = np.array(plt.imread(path + imgs[i]))
-            img_rs=misc.imresize(img,(224,224,3))
-            data[1000+time, :, :, :] = img_rs
-            label[1000+time] = 1
-            time +=1
-            if time == 1000:
-                break
-
-    return data,label
-
+from scipy import ndimage
 from skimage.transform import resize
 import numpy as np
 import matplotlib.pyplot as plt
 
+
+
 def load_data(path):
     """
     load the dataset
@@ -55,7 +21,6 @@ def load_data(path):
         X_train,Y_train
     """
 
-    #the code is running by my laptop thus I will just use 2000 data
     data=np.empty((2000,224,224,3),dtype="float32")
     label=np.empty((2000,1))
     imgs=os.listdir(path)
@@ -87,14 +52,10 @@ def load_data(path):
     return data,label
 
     
+            
 X_train,Y_train=load_data("C:/Git/Deep_learning/cats_and_dogs/train/")
 print(X_train.shape,Y_train.shape)
 
-
-'''
-cats and dogs recognition with transfer learning
-using ResNet50 pre_train weights
-'''
 
 from keras.applications.resnet50 import ResNet50
 from keras.models import Model
