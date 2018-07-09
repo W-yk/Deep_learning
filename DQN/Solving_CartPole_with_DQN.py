@@ -151,6 +151,7 @@ def main(weights_path, Episodes=100, batch_size=32, learning_rate = 0.001):
             
             if done:
                 print("episode: {}/{}, score: {}, epsilon: {:.2}".format(e, Episodes, time, epsilon))
+                # defione the score as the number of actions taken
                 break
             # restart the game if done 
                 
