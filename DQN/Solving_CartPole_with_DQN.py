@@ -40,7 +40,7 @@ def remember( Memory,state, action, reward, next_state, done):
     Memory.append((state, action, reward, next_state, done))
     return Memory
 
-def replay(action_size,batch_size,Memory,model,gamma):
+def replay(action_size,state_size,batch_size,Memory,model,gamma):
     
     '''
     Replay means sample data from the Memory and use it to train our model
@@ -48,6 +48,9 @@ def replay(action_size,batch_size,Memory,model,gamma):
     '''
 
     minibatch = random.sample(Memory, batch_size)
+    States=np.empty((batch_size,state_size))
+    Labels=np.empty((batch_size,action_size))
+    i=0
     for state,action,reward,next_state,done in minibatch:
     
         if not done:
@@ -61,9 +64,13 @@ def replay(action_size,batch_size,Memory,model,gamma):
         label=model.predict(state)
         label[0][action]= target
         # Only introduce loss for the action taken this timestep
+        States[i,:]=state
+        Labels[i,:]=label
+        i+=1
+        # construct the minibatch
     
-        model.fit(state, label , epochs=1, verbose=0)
-        # Train the model with each state in the minibatch
+    model.fit(state, label , epochs=1, verbose=0)
+    # Train the model with each state in the minibatch
     
     return model
 
@@ -156,7 +163,7 @@ def main(weights_path, Episodes=100, batch_size=32, learning_rate = 0.001):
             # restart the game if done 
                 
             if len(Memory) > batch_size:
-                model=replay(action_size,batch_size,Memory,model,gamma)
+                model=replay(action_size,state_size,batch_size,Memory,model,gamma)
             # train the model after the Memory is enough
                 
             
