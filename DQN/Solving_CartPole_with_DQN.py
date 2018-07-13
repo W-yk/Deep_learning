@@ -69,7 +69,7 @@ def replay(action_size,state_size,batch_size,Memory,model,gamma):
         i+=1
         # construct the minibatch
     
-    model.fit(state, label , epochs=1, verbose=0)
+    model.fit(States, Labels , epochs=1, verbose=0)
     # Train the model with each state in the minibatch
     
     return model
