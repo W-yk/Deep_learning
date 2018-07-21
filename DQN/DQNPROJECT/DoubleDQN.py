@@ -1,3 +1,4 @@
+import gym
 import keras
 import random
 import numpy as np
@@ -23,8 +24,8 @@ class  DoubleDQN_agent:
         self.learning_rate = 0.01
         self.model=self._build_model()
         self.target_model=self._build_model()
-        self.train_step=0
-        self.update_target_freq =10
+        self.steps=0
+        self.update_target_freq =1000
     
     def _build_model(self):
 
@@ -69,7 +70,6 @@ class  DoubleDQN_agent:
             i+=1
         self.model.fit(States, Labels , epochs=1, verbose=0)
         self.epsilon_decay()
-        self.train_step+=1
         self.update_model()
 
         return
@@ -81,7 +81,8 @@ class  DoubleDQN_agent:
             return self.env.action_space.sample()
     
         act_values = self.model.predict(state)
-            
+        self.steps+=1
+        
         return np.argmax(act_values[0]) 
 
 
@@ -101,7 +102,7 @@ def train(agent, Episodes=500, batch_size = 32):
     for e in range(Episodes):
         state = np.reshape(agent.env.reset(), [1, agent.state_size])
         
-        for time in range(20000):
+        for time in range(1000):
             agent.env.render()
             action = agent.act(state)
             next_state, reward, done, _ = agent.env.step(action)
@@ -128,4 +129,5 @@ if __name__ =="__main__":
     plt.plot(range(500), score)
     plt.ylabel('score')
     plt.xlabel('episodes')
+    plt.title('Double DQN performance ')
     plt.show()
