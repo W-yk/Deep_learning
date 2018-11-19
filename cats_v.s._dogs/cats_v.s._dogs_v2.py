@@ -85,9 +85,17 @@ except OSError:
 starts=[0,2500,5000,7500]
 for start in starts:
     X_train,Y_train=load_data("D:/Git/Deep_Learning/cats_v.s._dogs/train/",start)
+    
+    #shuffle
+    Temp=np.resize(X_train,(X_train.shape[0],224*224*3))
+    Temp=np.concatenate((Temp,Y_train),axis=1)
+    np.random.shuffle(Temp)
+    X_train=np.resize(Temp[:,:-1],(X_train.shape[0],224,224,3))
+    Y_train=Temp[:,-1]
+    
     print("train data starting form %d"%(start))
 
-    model.fit(x=X_train, y=Y_train, batch_size=32, epochs=20, shuffle=True,callbacks=[checkpoint,keras.callbacks.TensorBoard(log_dir='D://Git//Deep_Learning//cats_v.s._dogs//log')])
+    model.fit(x=X_train, y=Y_train, batch_size=32, epochs=20, validation_split=0.0,callbacks=[checkpoint,keras.callbacks.TensorBoard(log_dir='D://Git//Deep_Learning//cats_v.s._dogs//log')])
 
 
 
@@ -115,7 +123,7 @@ import pandas as pd
 df=pd.read_csv("D:/Git/Deep_Learning/cats_v.s._dogs/output.csv",index_col=0)
 
 
-def predict(path):
+def preform(path):
     
     img_r=np.array(cv2.imread(path)).astype("float32")
     img_rs=cv2.resize(img_r,(224,224))
@@ -131,7 +139,7 @@ test_imgs=os.listdir("D:/Git/Deep_Learning/cats_v.s._dogs/test")
 num=len(test_imgs)
 
 for i in range(num):
-    label=predict("D:/Git/Deep_Learning/cats_v.s._dogs/test/"+test_imgs[i])
+    label=preform("D:/Git/Deep_Learning/cats_v.s._dogs/test/"+test_imgs[i])
     df.set_value(int(test_imgs[i].split('.')[0]),'label',label)
     if i%500==0:
         df.to_csv("D:/Git/Deep_Learning/cats_v.s._dogs/output.csv")
